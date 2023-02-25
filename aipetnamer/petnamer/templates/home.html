@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="header">
+	<div class="logo">
+		<h1>AI Pet Name Generator</h1>
+		<img src="{% static 'giphy.gif' %}" loading="lazy" />
+		<div>
+			Pet's name generator powered by AI
+		</div>
+	</div>
+</div>
+
+<div class="main container">
+	<form method="POST" action="{% url 'generate_names' %}">
+		{% csrf_token %}
+		<table>
+			{{ form.as_table }}
+		</table>
+		<br>
+		<button id="submit-button" type="submit">Generate Names</button>
+	</form>
+	<br>
+	<div id="answer" class="container">
+		<strong>Suggested names:</strong> <span id="answer-area"></span>
+	</div>
+</div>
+
+<script>
+	$(document).ready(function () {
+		$("#answer").css("display", "none");
+		$("form").submit(function (e) {
+
+			$("#answer").css("display", "none");
+
+			let askButton = document.getElementById("submit-button");
+			askButton.textContent = "Generating...";
+			askButton.disabled = true;
+
+			$.ajax({
+				type: 'POST',
+				url: '/generate_names',
+				data: $("form").serialize(),
+				datatype: "json",
+				encode: true
+			}).done(function (data) {
+				$("#answer").css("display", "contents");
+				var answer = document.getElementById('answer-area');
+				answer.innerHTML = data.names;
+
+				console.log(data)
+
+				askButton.textContent = "Generate Names";
+				askButton.disabled = false;
+			});
+
+			e.preventDefault();
+			return false;
+		});
+	});
+</script>
+
+<footer>
+	<p class="credits">2023 Project by <a href="https://www.linkedin.com/in/vitaliy-bobin-02235a162">Vitaly Bobin</a> •
+		<a href="https://github.com/dravicenna/ai-petnamer">Fork on GitHub</a></a></p>
+</footer>
+
+{% endblock %}

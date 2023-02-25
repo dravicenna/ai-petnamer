@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <title>AI Pet Name Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style type="text/css">
+        html {
+            max-width: 70ch;
+            /* larger spacing on larger screens, very small spacing on tiny screens */
+            padding: calc(1vmin + .5rem);
+            /* shorthand for margin-left/margin-right */
+            margin-inline: auto;
+            /* fluid sizing: https://frontaid.io/blog/fluid-typography-2d-css-locks-clamp/ */
+            font-size: clamp(1em, 0.909em + 0.45vmin, 1.25em);
+            /* use system font stack: https://developer.mozilla.org/en-US/docs/Web/CSS/font-family */
+            font-family: system-ui;
+            /* font-family: 'Press Start 2P', cursive; */
+        }
+
+        .body {
+            display: flex !important;
+            flex-direction: column !important;
+
+        }
+
+        .header {
+            margin-top: 5vh;
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            justify-items: flex-start;
+            align-items: inherit;
+            flex-flow: column;
+            align-content: center;
+            flex-wrap: wrap;
+            /* align-items: center; */
+        }
+
+        h1+p {
+            margin-top: 0;
+        }
+
+        .main {
+            display: flex !important;
+            flex-direction: column !important;
+            margin: 1rem auto;
+            max-width: 600px;
+            align-items: center;
+        }
+
+        select,
+        textarea,
+        button,
+        .button {
+            width: 100%;
+            border: 1px solid black;
+            border-radius: 10px;
+            font-size: 18px;
+            padding: 8px 12px;
+        }
+
+        button,
+        .button {
+            width: auto;
+            color: white;
+            background: rgb(43, 43, 43);
+        }
+
+        button:hover {
+            cursor: pointer;
+        }
+
+        button:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        a {
+            color: inherit;
+        }
+
+        .credits {
+            color: #777;
+        }
+
+
+        footer {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    {% block content %}{% endblock %}
+</body>
+
+</html>

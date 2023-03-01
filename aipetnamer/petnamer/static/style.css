@@ -1,0 +1,91 @@
+html {
+    max-width: 70ch;
+    /* larger spacing on larger screens, very small spacing on tiny screens */
+    padding: calc(1vmin + .5rem);
+    /* shorthand for margin-left/margin-right */
+    margin-inline: auto;
+    /* fluid sizing: https://frontaid.io/blog/fluid-typography-2d-css-locks-clamp/ */
+    font-size: clamp(1em, 0.909em + 0.45vmin, 1.25em);
+    /* use system font stack: https://developer.mozilla.org/en-US/docs/Web/CSS/font-family */
+    font-family: system-ui;
+    /* font-family: 'Press Start 2P', cursive; */
+}
+
+label {
+    font-size: 70%;
+}
+
+.body {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+img {
+    max-width: 200px;
+}
+
+.header {
+    margin-top: 5vh;
+    text-align: center;
+}
+
+.answer {
+    text-align: center;
+}
+
+form {
+    display: flex;
+    justify-items: flex-start;
+    align-items: inherit;
+    flex-flow: column;
+    align-content: center;
+    flex-wrap: wrap;
+    /* align-items: center; */
+}
+
+
+.main {
+    margin: 1rem auto;
+    align-items: center;
+}
+
+select,
+textarea,
+button,
+.button {
+    width: 100%;
+    border: 1px solid black;
+    border-radius: 10px;
+    font-size: 18px;
+    padding: 8px 12px;
+}
+
+button,
+.button {
+    width: auto;
+    color: white;
+    background: rgb(129, 139, 255);
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+a {
+    color: inherit;
+}
+
+.credits {
+    color: #777;
+}
+
+
+footer {
+    text-align: center;
+    font-size: 80%;
+}

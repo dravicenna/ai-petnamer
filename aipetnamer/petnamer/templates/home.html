@@ -3,67 +3,70 @@
 
 {% block content %}
 <div class="header">
-	<div class="logo">
-		<h1>AI Pet Name Generator</h1>
-		<img src="{% static 'giphy.gif' %}" loading="lazy" />
-		<div>
-			Pet's name generator powered by AI
-		</div>
-	</div>
+    <div class="logo">
+        <img src="{% static 'giphy.gif' %}" loading="lazy" />
+        <h1>AI PetNamer</h1>
+        <div>
+            Pet's name generator powered by AI
+        </div>
+    </div>
 </div>
 
 <div class="main container">
-	<form method="POST" action="{% url 'generate_names' %}">
-		{% csrf_token %}
-		<table>
-			{{ form.as_table }}
-		</table>
-		<br>
-		<button id="submit-button" type="submit">Generate Names</button>
-	</form>
-	<br>
-	<div id="answer" class="container">
-		<strong>Suggested names:</strong> <span id="answer-area"></span>
-	</div>
+    <form method="POST" action="{% url 'generate_names' %}">
+        {% csrf_token %}
+        <table>
+            {{ form.as_table }}
+        </table>
+        <br>
+        <button id="submit-button" type="submit">Generate Names</button>
+    </form>
+    <br>
+    <div id="answer" class="answer container">
+        <strong>Suggested names:</strong> <span id="answer-area"></span>
+    </div>
 </div>
-
-<script>
-	$(document).ready(function () {
-		$("#answer").css("display", "none");
-		$("form").submit(function (e) {
-
-			$("#answer").css("display", "none");
-
-			let askButton = document.getElementById("submit-button");
-			askButton.textContent = "Generating...";
-			askButton.disabled = true;
-
-			$.ajax({
-				type: 'POST',
-				url: '/generate_names',
-				data: $("form").serialize(),
-				datatype: "json",
-				encode: true
-			}).done(function (data) {
-				$("#answer").css("display", "contents");
-				var answer = document.getElementById('answer-area');
-				answer.innerHTML = data.names;
-
-				console.log(data)
-
-				askButton.textContent = "Generate Names";
-				askButton.disabled = false;
-			});
-
-			e.preventDefault();
-			return false;
-		});
-	});
-</script>
-
-<footer>
-	<p class="credits">2023 Project by <a href="https://www.linkedin.com/in/vitaliy-bobin-02235a162">Vitaly Bobin</a> •
-		<a href="https://github.com/dravicenna/ai-petnamer">Fork on GitHub</a></a></p>
+<footer class="credits">
+    2023 Created with ❤️ by <a target="_blank" href="https://www.upwork.com/freelancers/~010b6cefcb3e7111d0">Vitaly
+        Bobin</a>
+    <br>
+    <a target="_blank" href="https://t.me/d_avicenna"><i class="bi bi-telegram"></i></a>
+    <a target="_blank" href="https://github.com/dravicenna/ai-petnamer"><i class="bi bi-github"></i></a>
+    <a target="_blank" href="https://www.linkedin.com/in/vitaliy-bobin-02235a162/"><i class="bi bi-linkedin"></i></a>
+    <a target="_blank" href="https://www.facebook.com/vitaly.bobin/"><i class="bi bi-facebook"></i></a>
+    <a target="_blank" href="https://twitter.com/AvicennaVitaly"><i class="bi bi-twitter"></i></a>
 </footer>
 
+<script>
+    $(document).ready(function () {
+        $("#answer").hide();
+        $("form").submit(function (e) {
+            $("#answer").hide();
+            let askButton = document.getElementById("submit-button");
+            askButton.textContent = "Generating...";
+            askButton.disabled = true;
+
+            $.ajax({
+                type: 'POST',
+                url: '/generate_names',
+                data: $("form").serialize(),
+                datatype: "json",
+                encode: true
+            }).done(function (data) {
+                $("#answer").show();
+                var answer = document.getElementById('answer-area');
+                answer.innerHTML = data.names;
+
+                console.log(data)
+
+                askButton.textContent = "Generate Names";
+            }).always(function () {
+                askButton.disabled = false;
+            });
+
+            e.preventDefault();
+            return false;
+        });
+    });
+</script>
 {% endblock %}

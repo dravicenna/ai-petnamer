@@ -36,17 +36,12 @@ def get_ip(request: HttpRequest) -> str:
 
 @retry(wait=wait_random_exponential(min=1, max=60), stop=stop_after_attempt(6))
 def generate_names_from_dict(**data):
-
     if data.get('historical_themes') != 'none':
-
         prompt = f"Generate 10 pet name suggestions for a {data.get('pet_type')} with {data.get('color')} fur and a {data.get('personality_traits')} personality. The name should be {data.get('gender')}-specific and inspired by {data.get('historical_themes')}:\n\n"  # noqa
     else:
         prompt = f"Generate 10 pet name suggestions for a {data.get('pet_type')} with {data.get('color')} fur and a {data.get('personality_traits')} personality. The name should be {data.get('gender')}-specific:\n\n"  # noqa
     # Make the API request
-    response = openai.Completion.create(
-        prompt=prompt,
-        **API_PARAM
-    )
+    response = openai.Completion.create(prompt=prompt, **API_PARAM)
 
     return response["choices"][0]["text"]
 
@@ -59,7 +54,7 @@ def generate_names(request):
             pet_name_generator_obj = PetNameGenerator(**form.cleaned_data)
             pet_name_generator_obj.request_ip = get_ip(request)
             previous_gen = PetNameGenerator.objects.filter(slug=pet_name_generator_obj.to_slug()).first()
-            if previous_gen:
+            if previous_gen and previous_gen.result != 'Error':
                 return JsonResponse({"names": previous_gen.result})
             try:
                 pet_name_generator_obj.result = generate_names_from_dict(**form.cleaned_data)
@@ -67,7 +62,7 @@ def generate_names(request):
                 print(e)
                 pet_name_generator_obj.result = 'Error'
             pet_name_generator_obj.save()
-    return JsonResponse({"names": pet_name_generator_obj.result})
+            return JsonResponse({"names": pet_name_generator_obj.result})
 
 
 def home(request):

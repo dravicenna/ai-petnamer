@@ -7,7 +7,6 @@ class PetNameGeneratorForm(forms.ModelForm):
     class Meta:
         model = PetNameGenerator
         fields = ['pet_type', 'gender', 'color', 'personality_traits', 'historical_themes']
-        # fields = '__all__'
 
     def clean_pet_type(self):
         pet_type = self.cleaned_data.get('pet_type')

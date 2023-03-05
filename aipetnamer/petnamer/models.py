@@ -1,84 +1,93 @@
+import os
+
+import openai
 from django.db import models
+from django.http import HttpRequest
 from django.utils.text import slugify
+from dotenv import load_dotenv
+from tenacity import (retry, stop_after_attempt,  # for exponential backoff
+                      wait_random_exponential)
+
+from .constants import (COLOR_CHOICES, GENDER_CHOICES,
+                        HISTORICAL_THEMES_CHOICES, ORIGIN_CHOICES,
+                        PERSONALITY_TRAITS_CHOICES, PET_TYPE_CHOICES)
+
+MODEL = "text-davinci-003"
+API_PARAM = {
+    'engine': MODEL,
+    'max_tokens': 100,
+    'temperature': 0.8,
+    'top_p': 1,
+    # 'frequency_penalty': 0.28,
+    # 'presence_penalty': 0.13,
+}
+
+# Define the API key
+load_dotenv()  # take environment variables from .env.
+openai.api_key = os.getenv('OPENAI_TOKEN')
+
+
+@retry(wait=wait_random_exponential(min=1, max=60), stop=stop_after_attempt(6))
+def generate_names_from_dict(**data):
+    if data.get('historical_themes') != 'none':
+        prompt = f"Generate 10 pet name suggestions for a {data.get('pet_type')} with {data.get('color')} fur and a {data.get('personality_traits')} personality. The name should be {data.get('gender')}-specific and inspired by {data.get('historical_themes')}  and the name should be {data.get('origin')} origin:\n\n"  # noqa
+    else:
+        prompt = f"Generate 10 pet name suggestions for a {data.get('pet_type')} with {data.get('color')} fur and a {data.get('personality_traits')} personality. The name should be {data.get('gender')}-specific and the name should be {data.get('origin')} origin:\n\n"  # noqa
+    # Make the API request
+    response = openai.Completion.create(prompt=prompt, **API_PARAM)
+
+    return response["choices"][0]["text"]
+
+
+def get_ip(request: HttpRequest) -> str:
+    """Extract client IP from request."""
+    x_forwarded_for = request.headers.get("X-Forwarded-For", "")
+    if x_forwarded_for:
+        return x_forwarded_for.split(",")[0]
+    return request.META.get("REMOTE_ADDR", "")
+
+
+class PetManager(models.Manager):
+    """Custom model manager for PetNameGenerator objects."""
+
+    def _build_without_result(self, request: HttpRequest, formdata: dict):
+        """Build a new PetNameGenerator object from a request and form data"""
+        pg = PetNameGenerator(**formdata,
+                              request_ip=get_ip(request),
+                              )
+        pg.slug = pg.to_slug()
+        return pg
+
+    def _save_with_result(self, pg, result):
+        pg.result = result
+        pg.save()
+
+    def _last_generated(self, slug: str):
+        return PetNameGenerator.objects.filter(slug=slug).first()
+
+    def _process_and_return_result(self, request: HttpRequest, formdata: dict):
+        pg = self._build_without_result(request, formdata)
+        last_generated = self._last_generated(slug=pg.slug)
+
+        if last_generated and last_generated.result != 'Error':
+            result = last_generated.result
+            self._save_with_result(pg, result)
+            return result
+
+        try:
+            result = generate_names_from_dict(**formdata)
+        except BaseException as e:
+            print(e)
+            result = 'Error'
+
+        self._save_with_result(pg, result)
+        return result
+
+    def return_result(self, request: HttpRequest, formdata: dict):
+        return self._process_and_return_result(request, formdata)
 
 
 class PetNameGenerator(models.Model):
-    PET_TYPE_CHOICES = [
-        ('dog', 'Dog🐕'),
-        ('cat', 'Cat'),
-        ('rabbit', 'Rabbit'),
-        ('fish', 'Fish'),
-        ('horse', 'Horse'),
-        ('hamster', 'Hamster'),
-    ]
-    GENDER_CHOICES = [
-        ('male', 'Male'),
-        ('female', 'Female'),
-        ('neutral', 'Gender Neutral'),
-    ]
-    COLOR_CHOICES = [
-        ('black', 'Black'),
-        ('white', 'White'),
-        ('brown', 'Brown'),
-        ('gray', 'Gray'),
-        ('red', 'Red'),
-        ('orange', 'Orange'),
-        ('yellow', 'Yellow'),
-        ('green', 'Green'),
-        ('blue', 'Blue'),
-        ('purple', 'Purple'),
-        ('pink', 'Pink'),
-        ('multicolor', 'Multicolor'),
-    ]
-    PERSONALITY_TRAITS_CHOICES = [
-        ('friendly', 'Friendly'),
-        ('playful', 'Playful'),
-        ('energetic', 'Energetic'),
-        ('intelligent', 'Intelligent'),
-        ('loyal', 'Loyal'),
-        ('curious', 'Curious'),
-        ('affectionate', 'Affectionate'),
-        ('independent', 'Independent'),
-        ('calm', 'Calm'),
-        ('protective', 'Protective'),
-    ]
-    ORIGIN_CHOICES = [
-        ('English', 'English'),
-        ('African', 'African'),
-        ('Alaskan', 'Alaskan'),
-        ('American', 'American'),
-        ('Chinese', 'Chinese'),
-        ('Hebrew', 'Hebrew'),
-        ('Latin', 'Latin'),
-        ('Hindu', 'Hindu'),
-        ('Mexican', 'Mexican'),
-        ('Eskimo', 'Eskimo'),
-        ('Hispanic', 'Hispanic'),
-        ('Native American', 'Native American'),
-        ('Arabic', 'Arabic'),
-        ('French', 'French'),
-        ('Indian', 'Indian'),
-        ('Australian', 'Australian'),
-        ('German', 'German'),
-        ('Irish', 'Irish'),
-        ('Scottish', 'Scottish'),
-        ('Biblical', 'Biblical'),
-        ('Greek', 'Greek'),
-        ('Italian', 'Italian'),
-        ('Spanish', 'Spanish'),
-        ('Celtic', 'Celtic'),
-        ('Hawaiian', 'Hawaiian'),
-        ('Japanese', 'Japanese')
-    ]
-    HISTORICAL_THEMES_CHOICES = [
-        ('none', 'None'),
-        ('ancient egypt', 'Ancient Egypt'),
-        ('medieval europe', 'Medieval Europe'),
-        ('renaissance italy', 'Renaissance Italy'),
-        ('wild west', 'Wild West'),
-        ('ancient china', 'Ancient China'),
-        ('ancient greece and Rome', 'Ancient Greece and Rome'),
-    ]
 
     created_at = models.DateTimeField(auto_now_add=True)
     pet_type = models.CharField(max_length=10, choices=PET_TYPE_CHOICES, default=PET_TYPE_CHOICES[0][1])
@@ -93,6 +102,8 @@ class PetNameGenerator(models.Model):
     result = models.TextField(blank=True)
     request_ip = models.GenericIPAddressField(null=True)
 
+    objects = PetManager()
+
     class Meta:
         ordering = ('-created_at',)
 
@@ -106,4 +117,3 @@ class PetNameGenerator(models.Model):
 
     def __str__(self) -> str:
         return f'Created at {self.created_at}'
-        # return f'{self.pet_type}-{self.gender}-{self.color}'

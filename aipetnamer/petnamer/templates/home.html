@@ -4,7 +4,7 @@
 {% block content %}
 <div class="header">
     <div class="logo">
-        <img src="{% static 'giphy.gif' %}" loading="lazy" />
+        <a href="{% url 'home' %}"><img src="{% static 'giphy.gif' %}" loading="lazy" /></a>
         <h1>AI PetNamer</h1>
         <div>
             Pet's name generator powered by AI
@@ -27,8 +27,7 @@
     </div>
 </div>
 <footer class="credits">
-    2023 Created with ❤️ by <a target="_blank" href="https://www.upwork.com/freelancers/~010b6cefcb3e7111d0">Vitaly
-        Bobin</a>
+    2023 © Created with ❤️ by <a target="_blank" href="https://t.me/d_avicenna">Vitaly Bobin</a>
     <br>
     <a target="_blank" href="https://t.me/d_avicenna"><i class="bi bi-telegram"></i></a>
     <a target="_blank" href="https://github.com/dravicenna/ai-petnamer"><i class="bi bi-github"></i></a>
@@ -56,11 +55,8 @@
                 $("#answer").show();
                 var answer = document.getElementById('answer-area');
                 answer.innerHTML = data.names;
-
-                console.log(data)
-
-                askButton.textContent = "Generate Names";
             }).always(function () {
+                askButton.textContent = "Generate Names";
                 askButton.disabled = false;
             });
 

@@ -37,9 +37,9 @@ def get_ip(request: HttpRequest) -> str:
 @retry(wait=wait_random_exponential(min=1, max=60), stop=stop_after_attempt(6))
 def generate_names_from_dict(**data):
     if data.get('historical_themes') != 'none':
-        prompt = f"Generate 10 pet name suggestions for a {data.get('pet_type')} with {data.get('color')} fur and a {data.get('personality_traits')} personality. The name should be {data.get('gender')}-specific and inspired by {data.get('historical_themes')}:\n\n"  # noqa
+        prompt = f"Generate 10 pet name suggestions for a {data.get('pet_type')} with {data.get('color')} fur and a {data.get('personality_traits')} personality. The name should be {data.get('gender')}-specific and inspired by {data.get('historical_themes')}  and the name should be {data.get('origin')} origin:\n\n"  # noqa
     else:
-        prompt = f"Generate 10 pet name suggestions for a {data.get('pet_type')} with {data.get('color')} fur and a {data.get('personality_traits')} personality. The name should be {data.get('gender')}-specific:\n\n"  # noqa
+        prompt = f"Generate 10 pet name suggestions for a {data.get('pet_type')} with {data.get('color')} fur and a {data.get('personality_traits')} personality. The name should be {data.get('gender')}-specific and the name should be {data.get('origin')} origin:\n\n"  # noqa
     # Make the API request
     response = openai.Completion.create(prompt=prompt, **API_PARAM)
 

@@ -6,7 +6,7 @@ from .models import PetNameGenerator
 class PetNameGeneratorForm(forms.ModelForm):
     class Meta:
         model = PetNameGenerator
-        fields = ['pet_type', 'gender', 'color', 'personality_traits', 'historical_themes']
+        fields = ['pet_type', 'gender', 'color', 'origin', 'personality_traits', 'historical_themes']
 
     def clean_pet_type(self):
         pet_type = self.cleaned_data.get('pet_type')
@@ -25,6 +25,12 @@ class PetNameGeneratorForm(forms.ModelForm):
         if not color:
             raise forms.ValidationError("Please choose a color.")
         return color
+
+    def clean_origin(self):
+        origin = self.cleaned_data.get('origin')
+        if not origin:
+            raise forms.ValidationError("Please choose a origin.")
+        return origin
 
     def clean_personality_traits(self):
         personality_traits = self.cleaned_data.get('personality_traits')

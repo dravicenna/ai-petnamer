@@ -11,6 +11,7 @@ class PetNameGeneratorAdmin(admin.ModelAdmin):
         'pet_type',
         'gender',
         'color',
+        'origin',
         'personality_traits',
         'historical_themes',
         'slug',

@@ -32,7 +32,7 @@ if 'SECRET_KEY' in os.environ:
 
 
 if IS_HEROKU:
-    ALLOWED_HOSTS = ["*"]
+    ALLOWED_HOSTS = ["*", "https://aipetnamer.herokuapp.com"]
 else:
     ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1"]
 
@@ -41,7 +41,7 @@ DEBUG = True
 if IS_HEROKU:
     DEBUG = False
 
-CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1"]
+CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1", "https://aipetnamer.herokuapp.com"]
 
 # Application definition
 

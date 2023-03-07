@@ -21,6 +21,7 @@ mccabe==0.7.0
 multidict==6.0.4
 openai==0.26.5
 prompt-toolkit==3.0.37
+psycopg2-binary==2.9.5
 pycodestyle==2.10.0
 pyflakes==3.0.1
 python-dotenv==1.0.0

@@ -1,1 +1,1 @@
-web: gunicorn aipetnamer.wsgi
+web: cd aipetnamer && gunicorn aipetnamer.wsgi

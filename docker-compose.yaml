@@ -1,0 +1,13 @@
+version: "1.0"
+
+services:
+  webapp:
+    restart: unless-stopped
+    container_name: aipetnamer
+    build:
+      context: ./aipetnamer
+    ports:
+      - "8000:8000"
+    command: [ "python", "manage.py", "runserver", "0.0.0.0:8000" ]
+    volumes:
+      - .:/app

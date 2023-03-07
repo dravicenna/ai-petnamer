@@ -27,8 +27,13 @@
         content="Discover the perfect name for your furry friend with AI-Powered Pet Names! Our pet name generator uses advanced algorithms to generate unique and creative names for your pets.">
     <meta name="twitter:creator" content="@AvicennaVitaly">
     <!-- Image 280х150, less 1Мб -->
-    <meta name="twitter:image" content="{{request.scheme}}://{{request.META.HTTP_HOST}}{% static 'cover.png' %}">
+    <meta name="twitter:image"
+        content="{{request.scheme}}://{{request.META.HTTP_HOST}}{% static 'cover_twitter.png' %}">
 
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'site.webmanifest' %}">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">

@@ -1,5 +1,6 @@
-# ai-petnamer
+# AI-PetNamer
 
+![App preview](https://raw.githubusercontent.com/dravicenna/ai-petnamer/main/cover-image.png)
 Generate unique names for your furry friend!
 
 Please provide some information about your pet:

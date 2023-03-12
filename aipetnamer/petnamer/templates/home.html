@@ -39,6 +39,11 @@
 </footer>
 
 <script>
+    // Track submit button via GA4
+    document.getElementById('submit-button').addEventListener('click', function () {
+        gtag('event', 'submit_button_click', { 'event_category': 'Button', 'event_label': 'Generate Button' });
+    });
+    // AJAX request 
     $(document).ready(function () {
         $("#answer").hide();
         $("form").submit(function (e) {

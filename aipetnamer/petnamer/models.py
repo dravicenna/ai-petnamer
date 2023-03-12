@@ -111,9 +111,5 @@ class PetNameGenerator(models.Model):
         str_to_slug = f'{self.pet_type}-{self.gender}-{self.color}-{self.origin}-{self.personality_traits}-{self.historical_themes}'  # noqa
         return slugify(str_to_slug)
 
-    def save(self, *args, **kwargs):
-        self.slug = self.to_slug()
-        super(PetNameGenerator, self).save(*args, **kwargs)
-
     def __str__(self) -> str:
         return f'Created at {self.created_at}'

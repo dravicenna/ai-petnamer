@@ -1,6 +1,7 @@
 # AI-PetNamer
+DEMO: [Project available on heroku](https://aipetnamer.herokuapp.com/)
 
-![App preview](https://raw.githubusercontent.com/dravicenna/ai-petnamer/main/cover-image.png)
+![App preview](https://raw.githubusercontent.com/dravicenna/ai-petnamer/main/cover-image.gif)
 
 Generate unique names for your furry friend!
 
